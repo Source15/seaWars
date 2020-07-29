@@ -35,13 +35,13 @@ public class GameController {
         return gameService.foundNewGames();
     }
 
-    @PostMapping(value = "/getfield")
+    @RequestMapping(value = "/getfield", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public Field getField() throws JsonProcessingException {
+    public String getField(@RequestBody final Field field) throws JsonProcessingException {
 //        Field field = new Gson().fromJson("{ \"game\" : 1 }", Field.class);
-        String json = new Gson().toJson("http://localhost:8080/game/getfield)");
-        Field field = new Gson().fromJson(json , Field.class);
+//        String json = new Gson().toJson("http://localhost:8080/game/getfield)");
+//        Field field = new Gson().fromJson(json , Field.class);
         System.out.println(field.getGame());
-        return field;
+        return "field";
     }
 }
