@@ -30,33 +30,33 @@ class UserControllerTest {
 
     @Test
     void createUserTest() {
-            String createUserTest = userController.create("test1", "test1");
-
-//            Assert.assertEquals(Constants.OK, createUserTest);
-
-            String createUserTest1 = userController.create("test1", "test1");
-
-            Assert.assertEquals(Constants.NOK, createUserTest1);
-
-            String createUserTest2 = userController.create("123456789", "test1");
-
-            Assert.assertEquals(Constants.NOK, createUserTest2);
+//            String createUserTest = userController.create("test1", "test1");
+//
+////            Assert.assertEquals(Constants.OK, createUserTest);
+//
+//            String createUserTest1 = userController.create("test1", "test1");
+//
+//            Assert.assertEquals(Constants.NOK, createUserTest1);
+//
+//            String createUserTest2 = userController.create("123456789", "test1");
+//
+//            Assert.assertEquals(Constants.NOK, createUserTest2);
 
     }
 
     @Test
     void checkUserPasswordTest() {
-        String createUserTest = userController.create("test1", "test1");
-
-//        Assert.assertEquals(Constants.OK, createUserTest);
-
-        String checkUserPasswordTest = userService.checkUserPassword("test1", "test1");
-
-        Assert.assertEquals(Constants.OK, checkUserPasswordTest);
-
-        String checkUserPasswordTest1 = userService.checkUserPassword("test1", "12345");
-
-        Assert.assertEquals(Constants.NOK, checkUserPasswordTest1);
+//        String createUserTest = userController.create("test1", "test1");
+//
+////        Assert.assertEquals(Constants.OK, createUserTest);
+//
+//        String checkUserPasswordTest = userService.checkUserPassword("test1", "test1");
+//
+//        Assert.assertEquals(Constants.OK, checkUserPasswordTest);
+//
+//        String checkUserPasswordTest1 = userService.checkUserPassword("test1", "12345");
+//
+//        Assert.assertEquals(Constants.NOK, checkUserPasswordTest1);
 
     }
 }
