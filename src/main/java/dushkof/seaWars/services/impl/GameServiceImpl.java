@@ -163,9 +163,10 @@ public class GameServiceImpl implements GameService {
 
     private Field createField() throws IOException {
         try {
-            fis = new FileInputStream("src/main/resources/application.properties");
-            property.load(fis);
-            Integer FIELD_SIZE = Integer.valueOf(property.getProperty("db.field_size"));
+//            fis = new FileInputStream("src/main/resources/application.properties");
+//            property.load(fis);
+//            Integer FIELD_SIZE = Integer.valueOf(property.getProperty("db.field_size"));
+            Integer FIELD_SIZE =4;
             Field field = new Field();
             List<Cell> cells = new ArrayList<>();
             for (int i = 1; i <= FIELD_SIZE; i++) {

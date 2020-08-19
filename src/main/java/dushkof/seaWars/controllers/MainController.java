@@ -3,9 +3,12 @@ package dushkof.seaWars.controllers;
 
 import dushkof.seaWars.form.GameForm;
 import dushkof.seaWars.form.UserForm;
+import dushkof.seaWars.objects.Cell;
 import dushkof.seaWars.objects.Field;
 import dushkof.seaWars.objects.Game;
 import dushkof.seaWars.objects.User;
+import dushkof.seaWars.repo.CellRepo;
+import dushkof.seaWars.repo.FieldRepo;
 import dushkof.seaWars.repo.GameRepo;
 import dushkof.seaWars.repo.UserRepo;
 import dushkof.seaWars.services.GameService;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -41,6 +45,12 @@ public class MainController {
 
     @Resource
     GameRepo gameRepo;
+
+    @Resource
+    CellRepo cellRepo;
+
+    @Resource
+    FieldRepo fieldRepo;
 
     @Resource
     GameService gameService;
@@ -147,6 +157,53 @@ public class MainController {
         model.addAttribute("user", user);
         model.addAttribute("game", game);
         return "room";
+    }
+
+    @RequestMapping(value = {"/createField"}, method = RequestMethod.GET)
+    public String createField(Model model, @RequestParam(value = "name") final String name, @RequestParam(value = "game") final Long id) throws IOException {
+        try {
+            Field field = gameService.createField(name, id);
+            return "redirect:/field/?name=" + name + "&game=" + id +"&field=" + field.getId();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "/lobby";
+        }
+    }
+
+    @RequestMapping(value = {"/field"}, method = RequestMethod.GET)
+    public String placeSHips(Model model, @RequestParam(value = "name") final String name, @RequestParam(value = "game") final Long id, @RequestParam(value = "field") final Long fieldId){
+        Game game = gameRepo.findGameById(id);
+        User user = userRepo.findByName(name);
+        model.addAttribute("user", user);
+        model.addAttribute("game", game);
+        Field field = fieldRepo.findFieldById(fieldId);
+        List<Cell> cells = field.getCells();
+        model.addAttribute("cells", cells);
+        List<Cell> x1cell = new ArrayList<>();
+
+        List<Cell> x2cell = new ArrayList<>();
+
+        List<Cell> x3cell = new ArrayList<>();
+
+        List<Cell> x4cell = new ArrayList<>();
+        for (Cell cell : cells) {
+            if(cell.getX() == 1) {
+                x1cell.add(cell);
+            }else if (cell.getX() == 2) {
+                x2cell.add(cell);
+            } else if (cell.getX() == 3){
+                x3cell.add(cell);
+            } else {
+                x4cell.add(cell);
+            }
+
+        }
+        model.addAttribute("x1cell", x1cell);
+        model.addAttribute("x2cell", x2cell);
+        model.addAttribute("x3cell", x3cell);
+        model.addAttribute("x4cell", x4cell);
+
+        return "/field";
     }
 
 

@@ -13,4 +13,17 @@ table {
 table th, table td {
     padding: 5px;
 }
+ul {
+    padding-left: 0;
+    list-style: none;
+    font-size:0;
+    height:50px;
+}
+cell {
+    display: inline-block;
+    outline:1px solid black;
+    margin-right:0px;
+    height:100%;
+    width:50px;
+}
 
