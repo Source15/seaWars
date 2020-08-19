@@ -31,45 +31,48 @@
     <script type="application/javascript">
         function nikita(x, y) {
             alert('x = ' + x + ' y = ' + y);
+            $('.block'+x+'_'+y).html('done');
         }
 
         function testQuery() {
             $.get("/hello", function (data, status) {
                 alert("Data: " + data + "\nStatus: " + status);
+                $('.block').html(data);
             });
         }
     </script>
 </head>
 <body>
 <center>
+    <div class="block"><p>Hello</p></div>
     <h1>Поле игрока <a th:utext="${user.name}"/></h1>
     <h1 onclick="testQuery()">Game id = <a th:utext="${game.id}"/></h1>
 
 
     <ul>
         <cell th:each="cell : ${x1cell}">
-            <cell th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
                 <td th:text="${cell.id}">...</td>
             </cell>
         </cell>
     </ul>
     <ul>
         <cell th:each="cell : ${x2cell}">
-            <cell th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
                 <td th:text="${cell.id}">...</td>
             </cell>
         </cell>
     </ul>
     <ul>
         <cell th:each="cell : ${x3cell}">
-            <cell th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
                 <td th:text="${cell.id}">...</td>
             </cell>
         </cell>
     </ul>
     <ul>
         <cell th:each="cell : ${x4cell}">
-            <cell th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
                 <td th:text="${cell.id}">...</td>
             </cell>
         </cell>
