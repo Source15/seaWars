@@ -175,10 +175,9 @@ public class GameServiceImpl implements GameService {
                 }
             }
             List<Ship> ships = new ArrayList<>();
-            Ship ship1 = new Ship(2);
-            Ship ship2 = new Ship(2);
-            ships.add(ship1);
-            ships.add(ship2);
+            for(int i = 0 ; i < 2; i++){
+                ships.add(new Ship(1));
+            }
             field.setShips(ships);
             field.setCells(cells);
             return field;

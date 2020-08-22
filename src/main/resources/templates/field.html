@@ -30,9 +30,25 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="application/javascript">
         function nikita(x, y) {
-            alert('x = ' + x + ' y = ' + y);
-            $('.block'+x+'_'+y).html('done');
+            // var url = '/placeShip'
+            // alert('x = ' + x + ' y = ' + y);
+            // $('.block' + x + '_' + y).html('done');
+            // window.location.replace()
         }
+        function placeShip(cellId, gameId, user) {
+            // alert(cellId + ' ' + gameId + ' ' + user);
+            var url ='/placeShip';
+            var params = {
+                "user":user,
+                "game":gameId,
+                "cellId":cellId
+            };
+            $.get(url, params, function (d, status){
+                console.log(d);
+                $("html").html(d)
+            });
+        }
+
 
         function testQuery() {
             $.get("/hello", function (data, status) {
@@ -51,29 +67,57 @@
 
     <ul>
         <cell th:each="cell : ${x1cell}">
-            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
-                <td th:text="${cell.id}">...</td>
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}"
+                  th:onclick="'javascript:placeShip(' + ${cell.id} + ',' + ${game.id} + ',' + ${user.id} + ');'">
+                <cell th:if="${cell.availableForShip}">
+                    sea
+                </cell>
+                <cell th:unless="${cell.availableForShip}">
+                    <td th:text="${cell.status != null} ? 'ship' : 'X'">...</td>
+                    </td>
+                </cell>
             </cell>
         </cell>
     </ul>
     <ul>
         <cell th:each="cell : ${x2cell}">
-            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
-                <td th:text="${cell.id}">...</td>
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}"
+                  th:onclick="'javascript:placeShip(' + ${cell.id} + ',' + ${game.id} + ',' + ${user.id} + ');'">
+                <cell th:if="${cell.availableForShip}">
+                    sea
+                </cell>
+                <cell th:unless="${cell.availableForShip}">
+                    <td th:text="${cell.status != null} ? 'ship' : 'X'">...</td>
+                    </td>
+                </cell>
             </cell>
         </cell>
     </ul>
     <ul>
         <cell th:each="cell : ${x3cell}">
-            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
-                <td th:text="${cell.id}">...</td>
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}"
+                  th:onclick="'javascript:placeShip(' + ${cell.id} + ',' + ${game.id} + ',' + ${user.id} + ');'">
+                <cell th:if="${cell.availableForShip}">
+                    sea
+                </cell>
+                <cell th:unless="${cell.availableForShip}">
+                    <td th:text="${cell.status != null} ? 'ship' : 'X'">...</td>
+                    </td>
+                </cell>
             </cell>
         </cell>
     </ul>
     <ul>
         <cell th:each="cell : ${x4cell}">
-            <cell th:class="'block'+${cell.x} + '_'+${cell.y}" th:onclick="'javascript:nikita(' + ${cell.x} + ',' + ${cell.y} + ');'">
-                <td th:text="${cell.id}">...</td>
+            <cell th:class="'block'+${cell.x} + '_'+${cell.y}"
+                  th:onclick="'javascript:placeShip(' + ${cell.id} + ',' + ${game.id} + ',' + ${user.id} + ');'">
+                <cell th:if="${cell.availableForShip}">
+                    sea
+                </cell>
+                <cell th:unless="${cell.availableForShip}">
+                    <td th:text="${cell.status != null} ? 'ship' : 'X'">...</td>
+                    </td>
+                </cell>
             </cell>
         </cell>
     </ul>

@@ -1,22 +1,16 @@
 package dushkof.seaWars.controllers;
 
 
-import dushkof.seaWars.form.GameForm;
 import dushkof.seaWars.form.UserForm;
-import dushkof.seaWars.objects.Cell;
-import dushkof.seaWars.objects.Field;
-import dushkof.seaWars.objects.Game;
-import dushkof.seaWars.objects.User;
-import dushkof.seaWars.repo.CellRepo;
-import dushkof.seaWars.repo.FieldRepo;
-import dushkof.seaWars.repo.GameRepo;
-import dushkof.seaWars.repo.UserRepo;
+import dushkof.seaWars.objects.*;
+import dushkof.seaWars.repo.*;
 import dushkof.seaWars.services.GameService;
 import dushkof.seaWars.services.UserService;
 import org.apache.commons.lang.BooleanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -51,6 +45,9 @@ public class MainController {
 
     @Resource
     FieldRepo fieldRepo;
+
+    @Resource
+    ShipRepo shipRepo;
 
     @Resource
     GameService gameService;
@@ -204,6 +201,50 @@ public class MainController {
         model.addAttribute("x4cell", x4cell);
 
         return "/field";
+    }
+
+    @RequestMapping(value = "/placeShip", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String placeShip(@RequestParam(value = "user") final Long userId, @RequestParam(value = "game") final Long gameId, @RequestParam(value = "cellId") final Long cellId) {
+        User user = userRepo.getOne(userId);
+        Cell cell = cellRepo.getOne(cellId);
+        Field field = fieldRepo.findFieldByCellsContains(cell);
+        for (Ship ship : field.getShips()) {
+            if(ship.getAllCells().isEmpty() && cell.isAvailableForShip()){
+                ship.getAllCells().add(cell);
+                shipRepo.save(ship);
+                cell.setStatus(ship.getId());
+                cellRepo.save(cell);
+                marcAroundCellsWithCoordinats(cell.getX(), cell.getY(), field.getCells());
+            }
+        }
+        if(isNotFilledShips(field)){
+            return "redirect:/field/?name=" + user.getName() + "&game=" + gameId +"&field=" + field.getId();
+        }
+        return "/index";
+    }
+
+    private boolean isNotFilledShips(Field field) {
+        return field.getShips().stream().anyMatch(ship -> ship.getAllCells().isEmpty());
+    }
+
+    private void marcAroundCellsWithCoordinats(Integer x, Integer y, List<Cell> cells) {
+        for(int i = -1 ; i <= 1; i++){
+            for(int k = -1; k <= 1; k++){
+                marcAvailabilityCellWithCoordinats(x+i, y+k, cells);
+            }
+        }
+    }
+
+    private void marcAvailabilityCellWithCoordinats(Integer x, Integer y, List<Cell> cells) {
+        if(x > 4 || y > 4) {
+            return;
+        }
+        for (Cell cell : cells) {
+            if(cell.getY() == y && cell.getX() == x){
+                cell.setAvailableForShip(Boolean.FALSE);
+                cellRepo.save(cell);
+            }
+        }
     }
 
 
