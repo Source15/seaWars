@@ -171,9 +171,27 @@ public class MainController {
     public String placeSHips(Model model, @RequestParam(value = "name") final String name, @RequestParam(value = "game") final Long id, @RequestParam(value = "field") final Long fieldId){
         Game game = gameRepo.findGameById(id);
         User user = userRepo.findByName(name);
+        Field field = fieldRepo.findFieldById(fieldId);
+        prepareField(model, game, user, field);
+        return "/field";
+    }
+
+    @RequestMapping(value = "/placeShip", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public String placeShip(Model model, @RequestParam(value = "user") final Long userId, @RequestParam(value = "game") final Long gameId, @RequestParam(value = "cellId") final Long cellId) {
+        User user = userRepo.getOne(userId);
+        Cell cell = cellRepo.getOne(cellId);
+        Field field = fieldRepo.findFieldByCellsContains(cell);
+        gameService.placeShip(field, cell);
+        if(isNotFilledShips(field)){
+            prepareField(model, gameRepo.getOne(gameId), user, field);
+            return "/field";
+        }
+        return "/index";
+    }
+
+    private void prepareField(Model model, Game game, User user, Field field) {
         model.addAttribute("user", user);
         model.addAttribute("game", game);
-        Field field = fieldRepo.findFieldById(fieldId);
         List<Cell> cells = field.getCells();
         model.addAttribute("cells", cells);
         List<Cell> x1cell = new ArrayList<>();
@@ -199,52 +217,10 @@ public class MainController {
         model.addAttribute("x2cell", x2cell);
         model.addAttribute("x3cell", x3cell);
         model.addAttribute("x4cell", x4cell);
-
-        return "/field";
-    }
-
-    @RequestMapping(value = "/placeShip", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String placeShip(@RequestParam(value = "user") final Long userId, @RequestParam(value = "game") final Long gameId, @RequestParam(value = "cellId") final Long cellId) {
-        User user = userRepo.getOne(userId);
-        Cell cell = cellRepo.getOne(cellId);
-        Field field = fieldRepo.findFieldByCellsContains(cell);
-        for (Ship ship : field.getShips()) {
-            if(ship.getAllCells().isEmpty() && cell.isAvailableForShip()){
-                ship.getAllCells().add(cell);
-                shipRepo.save(ship);
-                cell.setStatus(ship.getId());
-                cellRepo.save(cell);
-                marcAroundCellsWithCoordinats(cell.getX(), cell.getY(), field.getCells());
-            }
-        }
-        if(isNotFilledShips(field)){
-            return "redirect:/field/?name=" + user.getName() + "&game=" + gameId +"&field=" + field.getId();
-        }
-        return "/index";
     }
 
     private boolean isNotFilledShips(Field field) {
         return field.getShips().stream().anyMatch(ship -> ship.getAllCells().isEmpty());
-    }
-
-    private void marcAroundCellsWithCoordinats(Integer x, Integer y, List<Cell> cells) {
-        for(int i = -1 ; i <= 1; i++){
-            for(int k = -1; k <= 1; k++){
-                marcAvailabilityCellWithCoordinats(x+i, y+k, cells);
-            }
-        }
-    }
-
-    private void marcAvailabilityCellWithCoordinats(Integer x, Integer y, List<Cell> cells) {
-        if(x > 4 || y > 4) {
-            return;
-        }
-        for (Cell cell : cells) {
-            if(cell.getY() == y && cell.getX() == x){
-                cell.setAvailableForShip(Boolean.FALSE);
-                cellRepo.save(cell);
-            }
-        }
     }
 
 

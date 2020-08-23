@@ -2,9 +2,7 @@ package dushkof.seaWars.services.impl;
 
 import dushkof.seaWars.controllers.HelloController;
 import dushkof.seaWars.objects.*;
-import dushkof.seaWars.repo.FieldRepo;
-import dushkof.seaWars.repo.GameRepo;
-import dushkof.seaWars.repo.UserRepo;
+import dushkof.seaWars.repo.*;
 import dushkof.seaWars.services.GameService;
 import org.apache.commons.lang.BooleanUtils;
 import org.slf4j.Logger;
@@ -29,6 +27,12 @@ public class GameServiceImpl implements GameService {
 
     @Resource
     UserRepo userRepo;
+
+    @Resource
+    ShipRepo shipRepo;
+
+    @Resource
+    CellRepo cellRepo;
 
     @Override
     public String createGame(String name) {
@@ -109,6 +113,40 @@ public class GameServiceImpl implements GameService {
         return game;
     }
 
+    @Override
+    public void placeShip(Field field, Cell cell) {
+        for (Ship ship : field.getShips()) {
+            if(ship.getAllCells().isEmpty() && cell.isAvailableForShip()){
+                ship.getAllCells().add(cell);
+                shipRepo.save(ship);
+                cell.setStatus(ship.getId());
+                cellRepo.save(cell);
+                marcAroundCellsWithCoordinats(cell.getX(), cell.getY(), field.getCells());
+            }
+        }
+    }
+
+    private void marcAroundCellsWithCoordinats(Integer x, Integer y, List<Cell> cells) {
+        for(int i = -1 ; i <= 1; i++){
+            for(int k = -1; k <= 1; k++){
+                marcAvailabilityCellWithCoordinats(x+i, y+k, cells);
+            }
+        }
+    }
+
+    private void marcAvailabilityCellWithCoordinats(Integer x, Integer y, List<Cell> cells) {
+        if(x > 4 || y > 4) {
+            return;
+        }
+        for (Cell cell : cells) {
+            if(cell.getY() == y && cell.getX() == x){
+                cell.setAvailableForShip(Boolean.FALSE);
+                cellRepo.save(cell);
+            }
+        }
+    }
+
+
     public List<Game> checkRepeatGames(List<Game> games) {
         List<Game> newGames = new ArrayList<>();
         for (Game game : games) {
@@ -175,7 +213,7 @@ public class GameServiceImpl implements GameService {
                 }
             }
             List<Ship> ships = new ArrayList<>();
-            for(int i = 0 ; i < 2; i++){
+            for(int i = 0 ; i < 3; i++){
                 ships.add(new Ship(1));
             }
             field.setShips(ships);

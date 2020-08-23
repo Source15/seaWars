@@ -1,5 +1,6 @@
 package dushkof.seaWars.services;
 
+import dushkof.seaWars.objects.Cell;
 import dushkof.seaWars.objects.Field;
 import dushkof.seaWars.objects.Game;
 
@@ -22,4 +23,6 @@ public interface GameService {
     String leaveGame(String name, Long gameId);
 
     Game getGameById(Long gameId);
+
+    void placeShip(Field field, Cell cell);
 }
